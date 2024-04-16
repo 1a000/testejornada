@@ -2,7 +2,7 @@ import utils from './utils.js'
 import RNA from './RNA.js'
 import controls from './controls.js'
 
-const SAMPLES = 20
+const SAMPLES = 2
 const game = Runner.instance_;
 let dinoList = []
 let dinoIndex = 0
@@ -32,7 +32,7 @@ setInterval(() => {
     if (game.crashed) {
         if (dino.score > bestScore) {
             bestScore = dino.score
-            bestRNA = dino.save()
+            bestRNA = dino.save
             console.log('Melhor pontuação:', bestScore)
         }
         dinoIndex++

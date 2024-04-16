@@ -13,29 +13,28 @@ class Neuron {
 
         this.weightList = new Array(inputs)
         .fill()
-        .map(() => randomRange(-1,1))
+        .map(() => randomRange(-1,1));
+    };
+
+    g(signalList = []) {
+        let u = 0;
+
+        for (let i = 0; i < this.weightList.length; i++) {
+            u += signalList[i] * this.weightList[i];
+        }
+
+        if (Math.tanh(u) > this.bias) return 1; // Ativado
+        else return 0; //Desativado
     }
-}
 
-g(signalList = []); {
-    let u = 0;
+    mutate(rate = 0.2) {
+        this.weightList = this.weightList.map((w) => {
+            return lerp(w, randomRange(-1, 1), rate);
+        });
 
-    for (let i = 0; i < this.weightList.length; i++) {
-        u += signalList[i] * this.weightList[i]
+        this.bias = lerp(this.bias, randomRange(-1, 1), rate)
+        }
     }
-
-    if (Math.tanh(u) > this.bias) return 1; // Ativado
-    else return 0; //Desativado
-};
-
-mutate(rate = 1); {
-    this.weightList = this.weightList.map(() => {
-        return lerp(w, randomRange(-1, 1), rate)
-    });
-
-    this.bias = lerp(this.bias, randomRange(-1, 1), range)
-}
-
 class RNA {
     constructor(inputCount = 1, levelList = []) {
         this.score = 0;
@@ -49,43 +48,45 @@ class RNA {
 
     compute(list = []) {
         for (let i = 0; i < this.levelList.length; i++) {
-            const tempList = []
+            const tempList = [];
 
             for (const neuron of this.levelList[i]) {
                 if (list.length !== neuron.weightList.length) throw new Error("Entrada Inválida");
-                tempList.push(neuron.g(list))
+                tempList.push(neuron.g(list));
             }
             list = tempList;
         }
         return list;
     }
-}
 
-mutate(rate = 1); {
-    for (const level of this.levelList) {
-        for (const neuron of level) neuron.mutate(rate)
+
+    mutate(rate = 1) {
+        for (const level of this.levelList) {
+            for (const neuron of level) neuron.mutate(rate);
+        }
     }
-}
 
-load(rna); {
+    load(rna) {
     if (!rna) return;
     try {
         this.levelList = rna.map((neuronList) => {
             return neuronList.map((neuron) => {
                 const n = new Neuron();
-                n.bias = neuron.bias
+                n.bias = neuron.bias;
                 n.weightList = neuron.weightList;
 
                 return n;
             });
         });
-    } catch (e) {
+     } catch (e) {
         return;
     }
+
 
     save(); {
         return this.levelList;
     }
-}
+    }
+}    
 
 export default RNA;
